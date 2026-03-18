@@ -43,11 +43,11 @@ class DepartmentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_department
-      @department = Department.find(params.expect(:id))
+      @department = Department.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def department_params
-      params.expect(department: [ :name ])
+      params.require(:department).permit(:name)
     end
 end

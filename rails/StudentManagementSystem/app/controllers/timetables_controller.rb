@@ -43,11 +43,11 @@ class TimetablesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_timetable
-      @timetable = Timetable.find(params.expect(:id))
+      @timetable = Timetable.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def timetable_params
-      params.expect(timetable: [ :SchoolClass_id, :Teacher_id, :Subject_id, :day, :start_time, :end_time ])
+      params.require(:timetable).permit(:class_subject_id, :teacher_id, :day, :start_time, :end_time)
     end
 end

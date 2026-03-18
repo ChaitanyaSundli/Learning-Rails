@@ -43,11 +43,11 @@ class ClubSchedulesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_club_schedule
-      @club_schedule = ClubSchedule.find(params.expect(:id))
+      @club_schedule = ClubSchedule.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def club_schedule_params
-      params.expect(club_schedule: [ :Club_id, :activity_type, :schedule_date, :start_time, :end_time, :Location_id ])
+      params.require(:club_schedule).permit(:club_id, :activity_type, :schedule_date, :start_time, :end_time, :location_id)
     end
 end

@@ -43,11 +43,11 @@ class ExamResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_exam_result
-      @exam_result = ExamResult.find(params.expect(:id))
+      @exam_result = ExamResult.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def exam_result_params
-      params.expect(exam_result: [ :Student_id, :Exam_id, :marks_obtained, :grade ])
+      params.require(:exam_result).permit(:student_id, :exam_id, :marks_obtained, :grade)    
     end
 end

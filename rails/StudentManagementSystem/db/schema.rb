@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_093532) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,9 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_093532) do
   create_table "departments", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
-    t.bigint "teacher_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["teacher_id"], name: "index_departments_on_teacher_id"
   end
 
   create_table "exam_results", force: :cascade do |t|
@@ -137,6 +135,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_093532) do
     t.bigint "department_id", null: false
     t.date "dob"
     t.string "email"
+    t.boolean "is_hod"
     t.string "name"
     t.string "phone"
     t.datetime "updated_at", null: false
@@ -144,16 +143,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_093532) do
   end
 
   create_table "timetables", force: :cascade do |t|
+    t.bigint "class_subject_id", null: false
     t.datetime "created_at", null: false
     t.date "day"
     t.time "end_time"
-    t.bigint "school_class_id", null: false
     t.time "start_time"
-    t.bigint "subject_id", null: false
     t.bigint "teacher_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["school_class_id"], name: "index_timetables_on_school_class_id"
-    t.index ["subject_id"], name: "index_timetables_on_subject_id"
+    t.index ["class_subject_id"], name: "index_timetables_on_class_subject_id"
     t.index ["teacher_id"], name: "index_timetables_on_teacher_id"
   end
 
@@ -165,14 +162,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_093532) do
   add_foreign_key "club_schedules", "clubs"
   add_foreign_key "club_schedules", "locations"
   add_foreign_key "clubs", "teachers"
-  add_foreign_key "departments", "teachers"
   add_foreign_key "exam_results", "exams"
   add_foreign_key "exam_results", "students"
   add_foreign_key "exams", "subjects"
   add_foreign_key "school_classes", "locations"
   add_foreign_key "students", "school_classes"
   add_foreign_key "teachers", "departments"
-  add_foreign_key "timetables", "school_classes"
-  add_foreign_key "timetables", "subjects"
+  add_foreign_key "timetables", "class_subjects"
   add_foreign_key "timetables", "teachers"
 end

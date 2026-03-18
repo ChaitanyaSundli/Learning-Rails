@@ -43,11 +43,11 @@ class ClassSubjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_class_subject
-      @class_subject = ClassSubject.find(params.expect(:id))
+      @class_subject = ClassSubject.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def class_subject_params
-      params.expect(class_subject: [ :SchoolClass_id, :Subject_id, :credit, :syllabus ])
+      params.require(:class_subject).permit(:school_class_id, :subject_id, :credit, :syllabus)    
     end
 end

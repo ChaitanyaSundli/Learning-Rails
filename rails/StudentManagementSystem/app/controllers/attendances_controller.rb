@@ -48,6 +48,6 @@ class AttendancesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def attendance_params
-      params.expect(attendance: [ :Student_id, :date, :status ])
+      params.expect(attendance: [ :student_id, :date, :status ])
     end
 end

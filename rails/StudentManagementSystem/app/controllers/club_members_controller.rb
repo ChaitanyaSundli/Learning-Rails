@@ -43,11 +43,11 @@ class ClubMembersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_club_member
-      @club_member = ClubMember.find(params.expect(:id))
+      @club_member = ClubMember.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def club_member_params
-      params.expect(club_member: [ :Student_id, :Club_id, :role, :status ])
+      params.require(:club_member).permit(:student_id, :club_id, :role, :status)
     end
 end

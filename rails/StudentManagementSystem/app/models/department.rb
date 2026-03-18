@@ -1,5 +1,9 @@
 class Department < ApplicationRecord
-    belongs_to :teacher
+    
     has_many :teachers, dependent: :destroy
-    has_one :teacher, dependent: :destroy
+
+    validates :name, presence: true, uniqueness: true
+    def hod
+        teachers.find_by(is_hod: true)
+    end
 end
