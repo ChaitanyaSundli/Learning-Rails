@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  SchoolClass: one
+  Subject: one
+  credit: 1
+  syllabus: MyString
+
+two:
+  SchoolClass: two
+  Subject: two
+  credit: 1
+  syllabus: MyString

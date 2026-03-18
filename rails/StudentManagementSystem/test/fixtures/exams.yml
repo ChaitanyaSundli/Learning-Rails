@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  Subject: one
+  exam_type: MyString
+  exam_date: 2026-03-18
+  start_time: 2026-03-18 15:00:24
+  end_time: 2026-03-18 15:00:24
+  max_mark: 1
+  pass_mark: 1
+
+two:
+  Subject: two
+  exam_type: MyString
+  exam_date: 2026-03-18
+  start_time: 2026-03-18 15:00:24
+  end_time: 2026-03-18 15:00:24
+  max_mark: 1
+  pass_mark: 1

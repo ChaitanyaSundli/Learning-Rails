@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  grade_lvl: 1
+  section: MyString
+  location: one
+
+two:
+  grade_lvl: 1
+  section: MyString
+  location: two

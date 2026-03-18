@@ -4,12 +4,12 @@ one:
   name: MyString
   dob: 2026-03-18
   phone: MyString
-  address: MyString
-  SchoolClass: one
+  email: MyString
+  Department: one
 
 two:
   name: MyString
   dob: 2026-03-18
   phone: MyString
-  address: MyString
-  SchoolClass: two
+  email: MyString
+  Department: two
