@@ -1,5 +1,7 @@
 class RemoveTeacherFromDepartments < ActiveRecord::Migration[8.1]
   def change
-    remove_reference :departments, :teacher, null: false, foreign_key: true
+    if column_exists?(:departments, :teacher_id)
+      remove_column :departments, :teacher_id
+    end
   end
 end

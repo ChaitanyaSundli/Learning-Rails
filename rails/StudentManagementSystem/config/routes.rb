@@ -7,6 +7,10 @@ Rails.application.routes.draw do
   resources :teachers do
     resources :timetables, only: [:index]
     resources :clubs, only: [:index]
+
+    member do
+      get :dashboard
+    end
   end
 
   resources :school_classes do
@@ -15,13 +19,21 @@ Rails.application.routes.draw do
     resources :subjects, only: [:index]
     resources :timetables, only: [:index]
     resources :attendances, only: [:index]
+
+    member do
+      get :timetable
+    end
   end
 
   resources :students do
-    resources :get_timetable,only: [:index]
     resources :attendances, only: [:index]
     resources :exam_results, only: [:index]
     resources :clubs, only: [:index]
+
+    member do
+      get :timetable
+      get :dashboard
+    end
   end
 
   resources :subjects do
@@ -33,10 +45,15 @@ Rails.application.routes.draw do
     resources :timetables, only: [:index]
   end
 
-  resources :timetables
+  resources :timetables do
+    collection do
+      get :available_teachers
+      get :available_class_subjects
+      get :class_view
+    end
+  end
 
   resources :attendances
-
   resources :exams do
     resources :exam_results, only: [:index]
   end
@@ -50,22 +67,19 @@ Rails.application.routes.draw do
   end
 
   resources :club_members
-
   resources :club_schedules
 
   resources :locations do
     resources :club_schedules, only: [:index]
+
+    collection do
+      get :available
+    end
   end
 
-  get 'students/:id/timetable', to: 'students#get_timetable'
-  get 'school_classes/:id/timetable', to: 'school_classes#get_timetable'
+  resources :enrollments
 
-  resources :students
-  resources :school_classes
-  resources :subjects
-  resources :locations
-
-
+  post "/login", to: "auth#login"
   get "up", to: ->(env) { [200, {}, [{ status: "OK", message: "Chal rha hai Server" }.to_json]] }
   match "*unmatched", to: "application#route_not_found", via: :all
 

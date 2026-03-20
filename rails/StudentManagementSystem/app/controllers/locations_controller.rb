@@ -47,6 +47,20 @@ class LocationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def location_params
-      params.require(:location).permit(:name)
+      params.require(:location).permit(:name, :building, :floor, :location_type)
+    end
+
+    def available
+      date = params[:date]
+      start_time = params[:start_time]
+      end_time = params[:end_time]
+
+      busy_ids = ClubSchedule.where(schedule_date: date)
+        .where("start_time < ? AND end_time > ?", end_time, start_time)
+        .pluck(:location_id)
+
+      locations = Location.where.not(id: busy_ids)
+
+      render json: locations
     end
 end

@@ -2,14 +2,15 @@ class Teacher < ApplicationRecord
   belongs_to :department
 
   has_many :timetables, dependent: :destroy
+  has_many :teacher_assignments, dependent: :destroy
   has_one :club, dependent: :destroy
 
-  scope :hods, -> { where(is_hod: true) }
-
-  validate :only_one_hod_per_department
   validates :name, :email, presence: true
   validates :email, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :phone, format: { with: /\A\d{10}\z/ }, allow_blank: true
+  validates :password, presence: true, length: { minimum: 6 }
+
+  validate :only_one_hod_per_department
 
   def only_one_hod_per_department
     return unless is_hod

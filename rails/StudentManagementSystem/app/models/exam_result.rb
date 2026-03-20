@@ -1,31 +1,33 @@
 class ExamResult < ApplicationRecord
   belongs_to :student
   belongs_to :exam
+  belongs_to :academic_year
 
-  before_save :round_marks
+  validates :marks_obtained, presence: true
+  validate :marks_within_limit
 
-  
+  before_save :calculate_grade
+
   private
-  
-  def round_marks
-    self.marks_obtained = marks_obtained.round if marks_obtained.present?
-    self.grade = get_grade(self.marks_obtained)
-  end
 
-  def get_grade(score)
-    case score
-    when 90..100 then "A+"
-    when 80..89  then "A"
-    when 70..79  then "B+"
-    when 60..69  then "B"
-    when 55..59  then "C+"
-    when 50..54  then "C"
-    when 45..49  then "D+"
-    when 40..44  then "D"
-    when 30..39  then "E"
+  def calculate_grade
+    score = marks_obtained.to_i
+
+    self.grade =
+      case score
+      when 90..100 then "A+"
+      when 80..89 then "A"
+      when 70..79 then "B+"
+      when 60..69 then "B"
+      when 50..59 then "C"
+      when 40..49 then "D"
       else "F"
+      end
+  end
+  
+  def marks_within_limit
+    if marks_obtained > exam.max_mark
+      errors.add(:marks_obtained, "cannot exceed max marks")
     end
   end
-
-
 end

@@ -43,7 +43,7 @@ class StudentsController < ApplicationController
 
   def get_timetable
     @student = Student.find(params[:id])
-    render json: @student.timetables.order(:day, :start_time)
+    render json: @student.timetables.order(:day_of_week, :time_slot_id)
   end
 
   private
@@ -54,7 +54,7 @@ class StudentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def student_params
-      params.require(:student).permit(:name, :dob, :phone, :address, :school_class_id)
+      params.require(:student).permit(:name, :dob, :phone, :address, :password)
     end
 
 end

@@ -42,7 +42,7 @@ class SchoolClassesController < ApplicationController
 
   def get_timetable
     school_class = SchoolClass.find(params[:id])
-    render json: school_class.timetables.order(:day,:start_time)
+    render json: school_class.timetables.order(:day_of_week, :time_slot_id)
   end
 
   private
@@ -53,6 +53,6 @@ class SchoolClassesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def school_class_params
-      params.require(:school_class).permit(:grade_lvl, :section, :location_id)
+      params.require(:school_class).permit(:grade_lvl, :section, :location_id, :academic_year_id)
     end
 end

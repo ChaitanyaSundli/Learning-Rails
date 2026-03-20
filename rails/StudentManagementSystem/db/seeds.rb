@@ -1,207 +1,267 @@
+require 'faker'
 
-def unique_phone(klass, prefix)
-  loop do
-    phone = "#{prefix}#{rand(100000000..999999999)}"
-    return phone unless klass.exists?(phone: phone)
-  end
+puts "Cleaning database..."
+
+[
+  ExamResult, Exam, Attendance, Timetable, TeacherAssignment,
+  ClassSubject, Enrollment, Student, Teacher,
+  Subject, SchoolClass, Department, Location,
+  AcademicYear, TimeSlot, Club, ClubMember, ClubSchedule
+].each(&:delete_all)
+
+puts "Creating Academic Year..."
+
+current_year = AcademicYear.create!(
+  name: "2025-26",
+  start_date: "2025-06-01",
+  end_date: "2026-03-31",
+  active: true
+)
+
+puts "Creating TimeSlots..."
+start_hour = 8
+
+time_slots = 6.times.map do |i|
+  start_time = Time.parse("#{start_hour + i}:00")
+  end_time = Time.parse("#{start_hour + i + 1}:00")
+
+  TimeSlot.create!(
+    name: "Period #{i + 1}",
+    start_time: start_time,
+    end_time: end_time,
+    position: i + 1
+  )
 end
 
-location_names = [
-  "Room No 101", "Room No 102", "Room No 103",
-  "Room No 104", "Room No 105",
-  "Science Lab", "Computer Lab",
-  "Art Room", "Tabla Room", "Playground"
-]
+puts "Creating Locations..."
 
-locations = location_names.map do |name|
-  Location.find_or_create_by!(name: name)
+locations = 10.times.map do
+  Location.create!(
+    name: "Room #{('A'..'Z').to_a.sample}-#{rand(100..999)}",
+    building: ["A", "B", "C"].sample,
+    floor: rand(1..3),
+    location_type: ["classroom", "lab", "club"].sample
+  )
 end
 
-class_rooms = locations.select { |l| l.name.include?("Room No") }
+puts "Creating Departments..."
 
-departments = %w[Science Mathematics Arts Sports].map do |name|
+departments = [
+  "Science",
+  "Mathematics",
+  "English",
+  "History",
+  "Computer",
+  "Sports"
+].map do |name|
   Department.find_or_create_by!(name: name)
 end
 
-teachers = 10.times.map do |i|
-  teacher = Teacher.find_or_initialize_by(email: "teacher#{i+1}@school.com")
+puts "Creating Teachers..."
 
-  teacher.update!(
-    name: "Teacher #{i+1}",
-    dob: Date.new(1980+i, rand(1..12), rand(1..28)),
-    phone: unique_phone(Teacher, "9"),
-    department: departments[i % departments.size],
+teachers = 20.times.map do
+  Teacher.create!(
+    name: Faker::Name.name,
+    dob: Faker::Date.birthday(min_age: 25, max_age: 60),
+    phone: Faker::Number.unique.number(digits: 10).to_s,
+    email: Faker::Internet.unique.email,
+    department: departments.sample,
+    password: "password",
     is_hod: false
   )
-
-  teacher
 end
 
+# Assign HOD
 departments.each do |dept|
-  next if dept.teachers.where(is_hod: true).exists?
-  dept.teachers.first&.update(is_hod: true)
+  teacher = teachers.select { |t| t.department == dept }.sample
+  teacher.update!(is_hod: true) if teacher
 end
 
-subjects = %w[Math Science English History Geography Art Sports].map do |name|
-  Subject.find_or_create_by!(name: name)
-end
+puts "Creating Subjects..."
 
-classes = (6..10).flat_map do |grade|
-  %w[A B].map do |sec|
-    SchoolClass.find_or_create_by!(grade_lvl: grade, section: sec) do |cls|
-      cls.location = class_rooms.sample
-    end
-  end
-end
-
-classes.each do |cls|
-  subjects.sample(4).each do |sub|
-    ClassSubject.find_or_create_by!(school_class: cls, subject: sub) do |cs|
-      cs.credit = 4
-    end
-  end
-end
-
-students = Student.all.to_a
-(100 - students.size).times do
-  students << Student.create!(
-    name: "Student #{students.size + 1}",
-    dob: Date.new(2008, rand(1..12), rand(1..28)),
-    phone: unique_phone(Student, "8"),
-    address: "City",
-    school_class: classes.sample
+subjects = 10.times.map do
+  Subject.create!(
+    name: Faker::Educator.unique.subject,
+    description: Faker::Lorem.sentence
   )
 end
 
-days = %w[Monday Tuesday Wednesday Thursday Friday]
-slots = [
-  ["09:00","10:00"], ["10:00","11:00"], ["11:00","12:00"],
-  ["12:00","13:00"], ["14:00","15:00"], ["15:00","16:00"]
-]
+puts "Creating School Classes..."
 
-classes.each do |cls|
-  days.each do |day|
-    slots.each do |start_t, end_t|
-      next if Timetable.joins(:class_subject).exists?(
-        class_subjects: { school_class_id: cls.id },
-        day: day,
-        start_time: start_t
+classes = 10.times.map do
+  SchoolClass.create!(
+    grade_lvl: rand(1..10),
+    section: ["A", "B", "C"].sample,
+    location: locations.sample,
+    academic_year: current_year
+  )
+end
+
+puts "Creating ClassSubjects..."
+
+class_subjects = classes.flat_map do |cls|
+  subjects.sample(5).map do |sub|
+    ClassSubject.create!(
+      school_class: cls,
+      subject: sub,
+      academic_year: current_year,
+      credit: rand(1..5),
+      syllabus: Faker::Lorem.sentence
+    )
+  end
+end
+
+puts "Assigning Teachers..."
+
+teacher_assignments = class_subjects.map do |cs|
+  TeacherAssignment.create!(
+    teacher: teachers.sample,
+    class_subject: cs,
+    academic_year: current_year
+  )
+end
+
+puts "Creating Students..."
+
+students = 50.times.map do
+  Student.create!(
+    name: Faker::Name.name,
+    dob: Faker::Date.birthday(min_age: 6, max_age: 18),
+    phone: Faker::Number.unique.number(digits: 10).to_s,
+    address: Faker::Address.full_address,
+    password: "password"
+  )
+end
+
+puts "Creating Enrollments..."
+
+enrollments = students.map do |student|
+  Enrollment.create!(
+    student: student,
+    school_class: classes.sample,
+    academic_year: current_year,
+    status: "active"
+  )
+end
+
+puts "Creating Timetable..."
+
+days = Timetable::DAYS
+
+class_subjects.each do |cs|
+  days.sample(3).each do |day|
+    time_slots.sample(2).each do |slot|
+
+      teacher_id = TeacherAssignment
+        .find_by(class_subject_id: cs.id, academic_year_id: academic_year.id)
+        &.teacher_id
+
+      next unless teacher_id
+
+      conflict = Timetable
+        .joins(:class_subject)
+        .joins("INNER JOIN teacher_assignments ON teacher_assignments.class_subject_id = class_subjects.id")
+        .where(teacher_assignments: { teacher_id: teacher_id, academic_year_id: academic_year.id })
+        .where(day_of_week: day, time_slot_id: slot.id)
+        .exists?
+
+      next if conflict
+
+      Timetable.create!(
+        class_subject_id: cs.id,
+        academic_year_id: academic_year.id,
+        day_of_week: day,
+        time_slot_id: slot.id
       )
 
-      attempts = 0
-      created = false
-
-      while attempts < 20 && !created
-        teacher = teachers.sample
-        class_subject = cls.class_subjects.sample
-
-        timetable = Timetable.new(
-          class_subject: class_subject,
-          teacher: teacher,
-          day: day,
-          start_time: start_t,
-          end_time: end_t
-        )
-
-        if timetable.valid?
-          timetable.save!
-          created = true
-        else
-          attempts += 1
-        end
-      end
     end
   end
 end
 
+puts "Creating Attendance..."
+
 students.each do |student|
-  3.times do
-    date = Date.today - rand(1..7)
-    next if Attendance.exists?(student: student, date: date)
+  used_slots = []
+
+  5.times do
+    slot = time_slots.sample
+
+    next if used_slots.include?(slot.id)
+
+    used_slots << slot.id
 
     Attendance.create!(
       student: student,
-      date: date,
-      status: %w[Present Absent].sample
+      date: Date.today,
+      time_slot: slot,
+      academic_year: academic_year,
+      status: ["present", "absent"].sample
     )
   end
 end
+puts "Creating Exams..."
 
-exams = subjects.map do |sub|
-  Exam.find_or_create_by!(subject: sub, exam_type: "Midterm") do |e|
-    e.exam_date = Date.today + rand(10..20)
-    e.start_time = "10:00"
-    e.end_time = "12:00"
-    e.max_mark = 100
-    e.pass_mark = 35
-  end
-end
-
-students.each do |student|
-  exams.sample(3).each do |exam|
-    next if ExamResult.exists?(student: student, exam: exam)
-
-    marks = rand(30..100)
-
-    ExamResult.create!(
-      student: student,
-      exam: exam,
-      marks_obtained: marks,
-      grade: marks > 75 ? "A" : marks > 50 ? "B" : "C"
-    )
-  end
-end
-
-clubs = [
-  { name: "Art Club", teacher: teachers[0] },
-  { name: "Music Club", teacher: teachers[1] },
-  { name: "Science Club", teacher: teachers[2] }
-].map do |c|
-  Club.find_or_create_by!(name: c[:name]) do |club|
-    club.teacher = c[:teacher]
-    club.category = "General"
-  end
-end
-
-students.sample(60).each do |student|
-  next if student.club_member.present?
-
-  ClubMember.create!(
-    student: student,
-    club: clubs.sample,
-    role: "Member",
-    status: "Active"
+exams = class_subjects.sample(10).map do |cs|
+  Exam.create!(
+    class_subject: cs,
+    academic_year: current_year,
+    time_slot: time_slots.sample,
+    exam_type: ["unit", "midterm", "final"].sample,
+    exam_date: Faker::Date.forward(days: 30),
+    max_mark: 100,
+    pass_mark: 35
   )
 end
 
-clubs.each do |club|
-  2.times do
-    attempts = 0
-    created = false
+puts "Creating Exam Results..."
 
-    while attempts < 25 && !created
-      date = Date.today + rand(1..5)
-      location = locations.sample
-
-      start_t = ["14:00","15:00","16:00"].sample
-      end_t = (Time.parse(start_t) + 2.hours).strftime("%H:%M")
-
-      schedule = ClubSchedule.new(
-        club: club,
-        activity_type: "Practice",
-        schedule_date: date,
-        start_time: start_t,
-        end_time: end_t,
-        location: location
-      )
-
-      if schedule.valid?
-        schedule.save!
-        created = true
-      else
-        attempts += 1
-      end
-    end
-
+exams.each do |exam|
+  students.sample(10).each do |student|
+    ExamResult.create!(
+      student: student,
+      exam: exam,
+      marks_obtained: rand(30..100),
+      academic_year: current_year
+    )
   end
 end
+
+puts "Creating Clubs..."
+
+clubs = 5.times.map do
+  Club.create!(
+    name: Faker::Team.name,
+    teacher: teachers.sample,
+    category: ["sports", "arts", "science"].sample
+  )
+end
+
+puts "Creating Club Members..."
+
+clubs.each do |club|
+  students.sample(10).each do |student|
+    ClubMember.create!(
+      student: student,
+      club: club,
+      role: ["member", "leader"].sample,
+      status: "active"
+    )
+  end
+end
+
+puts "Creating Club Schedules..."
+
+clubs.each do |club|
+  3.times do
+    ClubSchedule.create!(
+      club: club,
+      activity_type: Faker::Lorem.word,
+      schedule_date: Faker::Date.forward(days: 10),
+      start_time: "16:00",
+      end_time: "17:00",
+      location: locations.sample
+    )
+  end
+end
+
+puts "Seeding completed successfully! 🎉"

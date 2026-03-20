@@ -1,27 +1,23 @@
 class Student < ApplicationRecord
-  belongs_to :school_class
+  has_many :enrollments, dependent: :destroy
+  has_many :school_classes, through: :enrollments
+  has_many :academic_years, through: :enrollments
 
   has_many :attendances, dependent: :destroy
-  has_one :club_member, dependent: :destroy
   has_many :exam_results, dependent: :destroy
+  has_one :club_member, dependent: :destroy
 
-  has_many :class_subjects, through: :school_class
-  has_many :timetables, through: :class_subjects
-
-  has_one :club, through: :club_member
   has_many :exams, through: :exam_results
 
   validates :name, :dob, :address, presence: true
-  validate :dob_in_the_past
-  validates :phone, presence: true, format: { with: /\A\d{10}\z/, message: "must be 10 digits" },uniqueness: true
-  validates :school_class_id, presence: true
+  validates :phone, presence: true, uniqueness: true, format: { with: /\A\d{10}\z/ }
+  validates :password, presence: true, length: { minimum: 6 }
+
+  validate :dob_in_past
 
   private
 
-  def dob_in_the_past
-    if dob.present? && dob >= Date.today
-      errors.add(:dob, "must be in the past")
-    end
+  def dob_in_past
+    errors.add(:dob, "must be in the past") if dob.present? && dob >= Date.today
   end
 end
-
