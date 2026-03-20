@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_20_193333) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_211950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,12 +52,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_193333) do
   end
 
   create_table "club_members", force: :cascade do |t|
+    t.bigint "academic_year_id"
     t.bigint "club_id", null: false
     t.datetime "created_at", null: false
     t.string "role"
     t.string "status"
     t.bigint "student_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["academic_year_id"], name: "index_club_members_on_academic_year_id"
     t.index ["club_id"], name: "index_club_members_on_club_id"
     t.index ["student_id"], name: "index_club_members_on_student_id"
   end
@@ -221,6 +223,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_193333) do
   add_foreign_key "class_subjects", "academic_years"
   add_foreign_key "class_subjects", "school_classes"
   add_foreign_key "class_subjects", "subjects"
+  add_foreign_key "club_members", "academic_years"
   add_foreign_key "club_members", "clubs"
   add_foreign_key "club_members", "students"
   add_foreign_key "club_schedules", "clubs"

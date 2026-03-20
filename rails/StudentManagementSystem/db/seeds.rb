@@ -1,267 +1,201 @@
-require 'faker'
-
 puts "Cleaning database..."
 
 [
-  ExamResult, Exam, Attendance, Timetable, TeacherAssignment,
-  ClassSubject, Enrollment, Student, Teacher,
-  Subject, SchoolClass, Department, Location,
-  AcademicYear, TimeSlot, Club, ClubMember, ClubSchedule
+  ClubMember,
+  ClubSchedule,
+  Attendance,
+  Timetable,
+  ExamResult,
+  Exam,
+  TeacherAssignment,
+  ClassSubject,
+  Enrollment,
+  Club,
+  Student,
+  Teacher,
+  Subject,
+  SchoolClass,
+  Department,
+  Location,
+  TimeSlot,
+  AcademicYear
 ].each(&:delete_all)
 
-puts "Creating Academic Year..."
-
-current_year = AcademicYear.create!(
-  name: "2025-26",
-  start_date: "2025-06-01",
-  end_date: "2026-03-31",
+# =============================
+# Academic Year
+# =============================
+year = AcademicYear.create!(
+  name: "2025-2026",
+  start_date: Date.new(2025,6,1),
+  end_date: Date.new(2026,5,31),
   active: true
 )
 
-puts "Creating TimeSlots..."
-start_hour = 8
+# =============================
+# TimeSlots (10)
+# =============================
+ts1 = TimeSlot.create!(name:"P1", start_time:"08:00", end_time:"09:00", position:1)
+ts2 = TimeSlot.create!(name:"P2", start_time:"09:00", end_time:"10:00", position:2)
+ts3 = TimeSlot.create!(name:"P3", start_time:"10:00", end_time:"11:00", position:3)
+ts4 = TimeSlot.create!(name:"P4", start_time:"11:00", end_time:"12:00", position:4)
+ts5 = TimeSlot.create!(name:"P5", start_time:"12:00", end_time:"13:00", position:5)
+ts6 = TimeSlot.create!(name:"P6", start_time:"13:00", end_time:"14:00", position:6)
+ts7 = TimeSlot.create!(name:"P7", start_time:"14:00", end_time:"15:00", position:7)
+ts8 = TimeSlot.create!(name:"P8", start_time:"15:00", end_time:"16:00", position:8)
+ts9 = TimeSlot.create!(name:"P9", start_time:"16:00", end_time:"17:00", position:9)
+ts10 = TimeSlot.create!(name:"P10", start_time:"17:00", end_time:"18:00", position:10)
 
-time_slots = 6.times.map do |i|
-  start_time = Time.parse("#{start_hour + i}:00")
-  end_time = Time.parse("#{start_hour + i + 1}:00")
+# =============================
+# Locations (10)
+# =============================
+l1 = Location.create!(name:"Room A1", building:"A", floor:"1", location_type:"classroom")
+l2 = Location.create!(name:"Room A2", building:"A", floor:"1", location_type:"classroom")
+l3 = Location.create!(name:"Room B1", building:"B", floor:"1", location_type:"classroom")
+l4 = Location.create!(name:"Room B2", building:"B", floor:"1", location_type:"classroom")
+l5 = Location.create!(name:"Lab 1", building:"C", floor:"1", location_type:"lab")
+l6 = Location.create!(name:"Lab 2", building:"C", floor:"1", location_type:"lab")
+l7 = Location.create!(name:"Room C1", building:"C", floor:"2", location_type:"classroom")
+l8 = Location.create!(name:"Room C2", building:"C", floor:"2", location_type:"classroom")
+l9 = Location.create!(name:"Room D1", building:"D", floor:"1", location_type:"classroom")
+l10 = Location.create!(name:"Club Room", building:"E", floor:"1", location_type:"club")
 
-  TimeSlot.create!(
-    name: "Period #{i + 1}",
-    start_time: start_time,
-    end_time: end_time,
-    position: i + 1
-  )
-end
+# =============================
+# Departments
+# =============================
+d1 = Department.create!(name:"Science")
+d2 = Department.create!(name:"Math")
+d3 = Department.create!(name:"English")
 
-puts "Creating Locations..."
+# =============================
+# Teachers (10)
+# =============================
+t1 = Teacher.create!(name:"T1", email:"t1@mail.com", phone:"1000000000", department:d1, password:"123456")
+t2 = Teacher.create!(name:"T2", email:"t2@mail.com", phone:"2000000000", department:d2, password:"123456")
+t3 = Teacher.create!(name:"T3", email:"t3@mail.com", phone:"3000000000", department:d3, password:"123456")
+t4 = Teacher.create!(name:"T4", email:"t4@mail.com", phone:"4000000000", department:d1, password:"123456")
+t5 = Teacher.create!(name:"T5", email:"t5@mail.com", phone:"5000000000", department:d2, password:"123456")
+t6 = Teacher.create!(name:"T6", email:"t6@mail.com", phone:"6000000000", department:d3, password:"123456")
+t7 = Teacher.create!(name:"T7", email:"t7@mail.com", phone:"7000000000", department:d1, password:"123456")
+t8 = Teacher.create!(name:"T8", email:"t8@mail.com", phone:"8000000000", department:d2, password:"123456")
+t9 = Teacher.create!(name:"T9", email:"t9@mail.com", phone:"9000000000", department:d3, password:"123456")
+t10 = Teacher.create!(name:"T10", email:"t10@mail.com", phone:"1000000000", department:d1, password:"123456")
 
-locations = 10.times.map do
-  Location.create!(
-    name: "Room #{('A'..'Z').to_a.sample}-#{rand(100..999)}",
-    building: ["A", "B", "C"].sample,
-    floor: rand(1..3),
-    location_type: ["classroom", "lab", "club"].sample
-  )
-end
+# =============================
+# Subjects (10)
+# =============================
+s1 = Subject.create!(name:"Math")
+s2 = Subject.create!(name:"Science")
+s3 = Subject.create!(name:"English")
+s4 = Subject.create!(name:"History")
+s5 = Subject.create!(name:"Geography")
+s6 = Subject.create!(name:"Physics")
+s7 = Subject.create!(name:"Chemistry")
+s8 = Subject.create!(name:"Biology")
+s9 = Subject.create!(name:"Computer")
+s10 = Subject.create!(name:"Sports")
 
-puts "Creating Departments..."
+# =============================
+# Classes (10)
+# =============================
+c1 = SchoolClass.create!(grade_lvl:1, section:"A", location:l1, academic_year_id:year.id)
+c2 = SchoolClass.create!(grade_lvl:1, section:"B", location:l2, academic_year_id:year.id)
+c3 = SchoolClass.create!(grade_lvl:2, section:"A", location:l3, academic_year_id:year.id)
+c4 = SchoolClass.create!(grade_lvl:2, section:"B", location:l4, academic_year_id:year.id)
+c5 = SchoolClass.create!(grade_lvl:3, section:"A", location:l5, academic_year_id:year.id)
+c6 = SchoolClass.create!(grade_lvl:3, section:"B", location:l6, academic_year_id:year.id)
+c7 = SchoolClass.create!(grade_lvl:4, section:"A", location:l7, academic_year_id:year.id)
+c8 = SchoolClass.create!(grade_lvl:4, section:"B", location:l8, academic_year_id:year.id)
+c9 = SchoolClass.create!(grade_lvl:5, section:"A", location:l9, academic_year_id:year.id)
+c10 = SchoolClass.create!(grade_lvl:5, section:"B", location:l10, academic_year_id:year.id)
 
-departments = [
-  "Science",
-  "Mathematics",
-  "English",
-  "History",
-  "Computer",
-  "Sports"
-].map do |name|
-  Department.find_or_create_by!(name: name)
-end
+# =============================
+# ClassSubjects (10)
+# =============================
+cs1 = ClassSubject.create!(school_class:c1, subject:s1, academic_year_id:year.id, credit:4)
+cs2 = ClassSubject.create!(school_class:c2, subject:s2, academic_year_id:year.id, credit:4)
+cs3 = ClassSubject.create!(school_class:c3, subject:s3, academic_year_id:year.id, credit:4)
+cs4 = ClassSubject.create!(school_class:c4, subject:s4, academic_year_id:year.id, credit:4)
+cs5 = ClassSubject.create!(school_class:c5, subject:s5, academic_year_id:year.id, credit:4)
+cs6 = ClassSubject.create!(school_class:c6, subject:s6, academic_year_id:year.id, credit:4)
+cs7 = ClassSubject.create!(school_class:c7, subject:s7, academic_year_id:year.id, credit:4)
+cs8 = ClassSubject.create!(school_class:c8, subject:s8, academic_year_id:year.id, credit:4)
+cs9 = ClassSubject.create!(school_class:c9, subject:s9, academic_year_id:year.id, credit:4)
+cs10 = ClassSubject.create!(school_class:c10, subject:s10, academic_year_id:year.id, credit:4)
 
-puts "Creating Teachers..."
+# =============================
+# Teacher Assignments
+# =============================
+TeacherAssignment.create!(teacher:t1, class_subject:cs1, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t2, class_subject:cs2, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t3, class_subject:cs3, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t4, class_subject:cs4, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t5, class_subject:cs5, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t6, class_subject:cs6, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t7, class_subject:cs7, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t8, class_subject:cs8, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t9, class_subject:cs9, academic_year_id:year.id)
+TeacherAssignment.create!(teacher:t10, class_subject:cs10, academic_year_id:year.id)
 
-teachers = 20.times.map do
-  Teacher.create!(
-    name: Faker::Name.name,
-    dob: Faker::Date.birthday(min_age: 25, max_age: 60),
-    phone: Faker::Number.unique.number(digits: 10).to_s,
-    email: Faker::Internet.unique.email,
-    department: departments.sample,
-    password: "password",
-    is_hod: false
-  )
-end
+# =============================
+# Students (10)
+# =============================
+st1 = Student.create!(name:"S1", phone:"1001234561", password:"123456", address: "Pune", dob: "10/11/2003")
+st2 = Student.create!(name:"S2", phone:"1001234562", password:"123456", address: "Pune", dob: "10/11/2003")
+st3 = Student.create!(name:"S3", phone:"1001234563", password:"123456", address: "Pune", dob: "10/11/2003")
+st4 = Student.create!(name:"S4", phone:"1001234564", password:"123456", address: "Pune", dob: "10/11/2003")
+st5 = Student.create!(name:"S5", phone:"1001234565", password:"123456", address: "Pune", dob: "10/11/2003")
+st6 = Student.create!(name:"S6", phone:"1001234566", password:"123456", address: "Pune", dob: "10/11/2003")
+st7 = Student.create!(name:"S7", phone:"1001234567", password:"123456", address: "Pune", dob: "10/11/2003")
+st8 = Student.create!(name:"S8", phone:"1001234568", password:"123456", address: "Pune", dob: "10/11/2003")
+st9 = Student.create!(name:"S9", phone:"1001234569", password:"123456", address: "Pune", dob: "10/11/2003")
+st10 = Student.create!(name:"S10", phone:"1010101010", password:"123456", address: "Pune", dob: "10/11/2003")
 
-# Assign HOD
-departments.each do |dept|
-  teacher = teachers.select { |t| t.department == dept }.sample
-  teacher.update!(is_hod: true) if teacher
-end
+# =============================
+# Enrollments
+# =============================
+Enrollment.create!(student:st1, school_class:c1, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st2, school_class:c2, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st3, school_class:c3, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st4, school_class:c4, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st5, school_class:c5, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st6, school_class:c6, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st7, school_class:c7, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st8, school_class:c8, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st9, school_class:c9, academic_year_id:year.id, status: "active")
+Enrollment.create!(student:st10, school_class:c10, academic_year_id:year.id, status: "active")
 
-puts "Creating Subjects..."
+# =============================
+# Timetable (NO CONFLICT)
+# =============================
+Timetable.create!(class_subject:cs1, academic_year_id:year.id, day_of_week:"Monday", time_slot:ts1)
+Timetable.create!(class_subject:cs2, academic_year_id:year.id, day_of_week:"Monday", time_slot:ts2)
+Timetable.create!(class_subject:cs3, academic_year_id:year.id, day_of_week:"Monday", time_slot:ts3)
+Timetable.create!(class_subject:cs4, academic_year_id:year.id, day_of_week:"Monday", time_slot:ts4)
+Timetable.create!(class_subject:cs5, academic_year_id:year.id, day_of_week:"Monday", time_slot:ts5)
+Timetable.create!(class_subject:cs6, academic_year_id:year.id, day_of_week:"Tuesday", time_slot:ts1)
+Timetable.create!(class_subject:cs7, academic_year_id:year.id, day_of_week:"Tuesday", time_slot:ts2)
+Timetable.create!(class_subject:cs8, academic_year_id:year.id, day_of_week:"Tuesday", time_slot:ts3)
+Timetable.create!(class_subject:cs9, academic_year_id:year.id, day_of_week:"Tuesday", time_slot:ts4)
+Timetable.create!(class_subject:cs10, academic_year_id:year.id, day_of_week:"Tuesday", time_slot:ts5)
 
-subjects = 10.times.map do
-  Subject.create!(
-    name: Faker::Educator.unique.subject,
-    description: Faker::Lorem.sentence
-  )
-end
+# =============================
+# Clubs
+# =============================
+club1 = Club.create!(name:"Science Club", teacher:t1, category:"science")
+club2 = Club.create!(name:"Math Club", teacher:t2, category:"math")
 
-puts "Creating School Classes..."
+# =============================
+# Club Members
+# =============================
+ClubMember.create!(student:st1, club:club1, academic_year_id:year.id, role: "member")
+ClubMember.create!(student:st2, club:club1, academic_year_id:year.id, role: "member")
+ClubMember.create!(student:st3, club:club2, academic_year_id:year.id, role: "member")
+ClubMember.create!(student:st4, club:club2, academic_year_id:year.id, role: "member")
 
-classes = 10.times.map do
-  SchoolClass.create!(
-    grade_lvl: rand(1..10),
-    section: ["A", "B", "C"].sample,
-    location: locations.sample,
-    academic_year: current_year
-  )
-end
+# =============================
+# Club Schedule
+# =============================
+ClubSchedule.create!(club:club1, activity_type:"Experiment", schedule_date:Date.today+1, start_time:"16:00", end_time:"17:00", location:l10)
+ClubSchedule.create!(club:club2, activity_type:"Practice", schedule_date:Date.today+2, start_time:"16:00", end_time:"17:00", location:l9)
 
-puts "Creating ClassSubjects..."
-
-class_subjects = classes.flat_map do |cls|
-  subjects.sample(5).map do |sub|
-    ClassSubject.create!(
-      school_class: cls,
-      subject: sub,
-      academic_year: current_year,
-      credit: rand(1..5),
-      syllabus: Faker::Lorem.sentence
-    )
-  end
-end
-
-puts "Assigning Teachers..."
-
-teacher_assignments = class_subjects.map do |cs|
-  TeacherAssignment.create!(
-    teacher: teachers.sample,
-    class_subject: cs,
-    academic_year: current_year
-  )
-end
-
-puts "Creating Students..."
-
-students = 50.times.map do
-  Student.create!(
-    name: Faker::Name.name,
-    dob: Faker::Date.birthday(min_age: 6, max_age: 18),
-    phone: Faker::Number.unique.number(digits: 10).to_s,
-    address: Faker::Address.full_address,
-    password: "password"
-  )
-end
-
-puts "Creating Enrollments..."
-
-enrollments = students.map do |student|
-  Enrollment.create!(
-    student: student,
-    school_class: classes.sample,
-    academic_year: current_year,
-    status: "active"
-  )
-end
-
-puts "Creating Timetable..."
-
-days = Timetable::DAYS
-
-class_subjects.each do |cs|
-  days.sample(3).each do |day|
-    time_slots.sample(2).each do |slot|
-
-      teacher_id = TeacherAssignment
-        .find_by(class_subject_id: cs.id, academic_year_id: academic_year.id)
-        &.teacher_id
-
-      next unless teacher_id
-
-      conflict = Timetable
-        .joins(:class_subject)
-        .joins("INNER JOIN teacher_assignments ON teacher_assignments.class_subject_id = class_subjects.id")
-        .where(teacher_assignments: { teacher_id: teacher_id, academic_year_id: academic_year.id })
-        .where(day_of_week: day, time_slot_id: slot.id)
-        .exists?
-
-      next if conflict
-
-      Timetable.create!(
-        class_subject_id: cs.id,
-        academic_year_id: academic_year.id,
-        day_of_week: day,
-        time_slot_id: slot.id
-      )
-
-    end
-  end
-end
-
-puts "Creating Attendance..."
-
-students.each do |student|
-  used_slots = []
-
-  5.times do
-    slot = time_slots.sample
-
-    next if used_slots.include?(slot.id)
-
-    used_slots << slot.id
-
-    Attendance.create!(
-      student: student,
-      date: Date.today,
-      time_slot: slot,
-      academic_year: academic_year,
-      status: ["present", "absent"].sample
-    )
-  end
-end
-puts "Creating Exams..."
-
-exams = class_subjects.sample(10).map do |cs|
-  Exam.create!(
-    class_subject: cs,
-    academic_year: current_year,
-    time_slot: time_slots.sample,
-    exam_type: ["unit", "midterm", "final"].sample,
-    exam_date: Faker::Date.forward(days: 30),
-    max_mark: 100,
-    pass_mark: 35
-  )
-end
-
-puts "Creating Exam Results..."
-
-exams.each do |exam|
-  students.sample(10).each do |student|
-    ExamResult.create!(
-      student: student,
-      exam: exam,
-      marks_obtained: rand(30..100),
-      academic_year: current_year
-    )
-  end
-end
-
-puts "Creating Clubs..."
-
-clubs = 5.times.map do
-  Club.create!(
-    name: Faker::Team.name,
-    teacher: teachers.sample,
-    category: ["sports", "arts", "science"].sample
-  )
-end
-
-puts "Creating Club Members..."
-
-clubs.each do |club|
-  students.sample(10).each do |student|
-    ClubMember.create!(
-      student: student,
-      club: club,
-      role: ["member", "leader"].sample,
-      status: "active"
-    )
-  end
-end
-
-puts "Creating Club Schedules..."
-
-clubs.each do |club|
-  3.times do
-    ClubSchedule.create!(
-      club: club,
-      activity_type: Faker::Lorem.word,
-      schedule_date: Faker::Date.forward(days: 10),
-      start_time: "16:00",
-      end_time: "17:00",
-      location: locations.sample
-    )
-  end
-end
-
-puts "Seeding completed successfully! 🎉"
+puts "FULL HARD SEEDED SUCCESSFULLY"
