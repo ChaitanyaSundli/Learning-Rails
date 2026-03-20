@@ -1,6 +1,7 @@
 class ClassSubjectsController < ApplicationController
   before_action :set_class_subject, only: %i[ show update destroy ]
 
+
   # GET /class_subjects
   # GET /class_subjects.json
   def index

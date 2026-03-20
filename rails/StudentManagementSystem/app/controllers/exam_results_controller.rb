@@ -48,6 +48,6 @@ class ExamResultsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def exam_result_params
-      params.require(:exam_result).permit(:student_id, :exam_id, :marks_obtained, :grade)    
+      params.require(:exam_result).permit(:student_id, :exam_id, :marks_obtained)    
     end
 end

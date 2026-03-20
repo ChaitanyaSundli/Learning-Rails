@@ -48,6 +48,6 @@ class TimetablesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def timetable_params
-      params.require(:timetable).permit(:class_subject_id, :teacher_id, :day, :start_time, :end_time)
+      params.require(:timetable).permit(:class_subject_id, :teacher_id, :start_time, :end_time)
     end
 end

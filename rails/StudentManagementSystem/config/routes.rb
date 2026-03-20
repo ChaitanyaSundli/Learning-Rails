@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   end
 
   resources :students do
+    resources :get_timetable,only: [:index]
     resources :attendances, only: [:index]
     resources :exam_results, only: [:index]
     resources :clubs, only: [:index]
@@ -56,11 +57,16 @@ Rails.application.routes.draw do
     resources :club_schedules, only: [:index]
   end
 
+  get 'students/:id/timetable', to: 'students#get_timetable'
+  get 'school_classes/:id/timetable', to: 'school_classes#get_timetable'
+
   resources :students
   resources :school_classes
   resources :subjects
   resources :locations
 
-  get "up" => "rails/health#show", as: :rails_health_check
+
+  get "up", to: ->(env) { [200, {}, [{ status: "OK", message: "Chal rha hai Server" }.to_json]] }
+  match "*unmatched", to: "application#route_not_found", via: :all
 
 end

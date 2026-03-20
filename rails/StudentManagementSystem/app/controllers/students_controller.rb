@@ -38,6 +38,12 @@ class StudentsController < ApplicationController
   # DELETE /students/1.json
   def destroy
     @student.destroy!
+    render json: {}
+  end
+
+  def get_timetable
+    @student = Student.find(params[:id])
+    render json: @student.timetables.order(:day, :start_time)
   end
 
   private
@@ -50,4 +56,5 @@ class StudentsController < ApplicationController
     def student_params
       params.require(:student).permit(:name, :dob, :phone, :address, :school_class_id)
     end
+
 end

@@ -5,6 +5,8 @@ class Timetable < ApplicationRecord
   has_one :school_class, through: :class_subject
   has_one :subject, through: :class_subject
 
+  before_save :get_day_from_date
+
   validates :class_subject_id, uniqueness: {
     scope: [:day, :start_time],
     message: "Class already has a subject at this time"
@@ -12,6 +14,15 @@ class Timetable < ApplicationRecord
 
   validate :teacher_not_double_booked
   validate :class_not_double_booked
+
+  private
+
+  def get_day_from_date 
+
+    if date_column.present?
+      self.day = date_column.strftime("%A")
+    end
+  end
 
   def teacher_not_double_booked
     if Timetable.exists?(

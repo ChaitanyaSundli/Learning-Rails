@@ -5,5 +5,5 @@ class Department < ApplicationRecord
     validates :name, presence: true, uniqueness: true
     def hod
         teachers.find_by(is_hod: true)
-    end
+    end 
 end

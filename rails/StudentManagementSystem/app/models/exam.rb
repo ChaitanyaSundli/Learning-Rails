@@ -1,5 +1,5 @@
 class Exam < ApplicationRecord
-  belongs_to :subject
+  belongs_to :class_subject
 
   has_many :exam_results, dependent: :destroy
 

@@ -40,6 +40,11 @@ class SchoolClassesController < ApplicationController
     @school_class.destroy!
   end
 
+  def get_timetable
+    school_class = SchoolClass.find(params[:id])
+    render json: school_class.timetables.order(:day,:start_time)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_school_class

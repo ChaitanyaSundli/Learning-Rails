@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_092838) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,6 +85,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
   end
 
   create_table "exams", force: :cascade do |t|
+    t.bigint "class_subject_id"
     t.datetime "created_at", null: false
     t.time "end_time"
     t.date "exam_date"
@@ -92,9 +93,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
     t.integer "max_mark"
     t.integer "pass_mark"
     t.time "start_time"
-    t.bigint "subject_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["subject_id"], name: "index_exams_on_subject_id"
+    t.index ["class_subject_id"], name: "index_exams_on_class_subject_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -117,6 +117,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
     t.datetime "created_at", null: false
     t.date "dob"
     t.string "name"
+    t.string "password"
     t.string "phone"
     t.bigint "school_class_id", null: false
     t.datetime "updated_at", null: false
@@ -137,6 +138,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
     t.string "email"
     t.boolean "is_hod"
     t.string "name"
+    t.string "password"
     t.string "phone"
     t.datetime "updated_at", null: false
     t.index ["department_id"], name: "index_teachers_on_department_id"
@@ -164,7 +166,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_193056) do
   add_foreign_key "clubs", "teachers"
   add_foreign_key "exam_results", "exams"
   add_foreign_key "exam_results", "students"
-  add_foreign_key "exams", "subjects"
+  add_foreign_key "exams", "class_subjects"
   add_foreign_key "school_classes", "locations"
   add_foreign_key "students", "school_classes"
   add_foreign_key "teachers", "departments"
