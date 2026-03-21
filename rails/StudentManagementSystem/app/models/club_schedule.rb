@@ -6,6 +6,12 @@ class ClubSchedule < ApplicationRecord
 
   validate :no_overlap
 
+  validates :location_id, uniqueness: {
+  scope: [:schedule_date, :start_time, :end_time],
+  message: "already booked for this time"
+  }
+  
+
   def no_overlap
     if ClubSchedule.where(location_id: location_id)
                    .where.not(id: id)

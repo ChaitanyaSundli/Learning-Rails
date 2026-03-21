@@ -5,11 +5,14 @@ class StudentsController < ApplicationController
   # GET /students.json
   def index
     @students = Student.all
+    render_success(@students, "Students Recieved")
   end
 
   # GET /students/1
   # GET /students/1.json
   def show
+    return unless @student
+    render_success(@student)
   end
 
   # POST /students
@@ -18,17 +21,18 @@ class StudentsController < ApplicationController
     @student = Student.new(student_params)
 
     if @student.save
-      render :show, status: :created, location: @student
+      render_success(@student,:created, "Student ID Created")
     else
-      render json: @student.errors, status: :unprocessable_entity
+      render_error(@student.errors.full_messages)
     end
   end
 
   # PATCH/PUT /students/1
   # PATCH/PUT /students/1.json
   def update
+    return unless @student
     if @student.update(student_params)
-      render :show, status: :ok, location: @student
+      render_success(@student, :ok, "Student ID Updated")
     else
       render json: @student.errors, status: :unprocessable_entity
     end
@@ -38,12 +42,21 @@ class StudentsController < ApplicationController
   # DELETE /students/1.json
   def destroy
     @student.destroy!
-    render json: {}
+    render_success(@student)
   end
 
   def get_timetable
     @student = Student.find(params[:id])
     render json: @student.timetables.order(:day_of_week, :time_slot_id)
+  end
+  
+  def login
+    @student = Student.find_by(id: params[:id], password: params[:password])
+    if @student
+      render json: @student
+    else
+      render json: {message: "Invalid Credentials"}
+    end
   end
 
   private

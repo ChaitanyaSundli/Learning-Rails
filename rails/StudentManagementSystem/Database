@@ -1,0 +1,198 @@
+--- Schema for table: club_members ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: true)
+  club_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  role: string (limit: , null: true)
+  status: string (limit: , null: true)
+  student_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: enrollments ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  school_class_id: integer (limit: 8, null: false)
+  status: string (limit: , null: true)
+  student_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: exam_results ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: true)
+  created_at: datetime (limit: , null: false)
+  exam_id: integer (limit: 8, null: false)
+  grade: string (limit: , null: true)
+  marks_obtained: integer (limit: 4, null: true)
+  student_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: teacher_assignments ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: false)
+  class_subject_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  teacher_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: timetables ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: false)
+  class_subject_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  day_of_week: string (limit: , null: false)
+  time_slot_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: schema_migrations ---
+  version: string (limit: , null: false)
+
+--- Schema for table: clubs ---
+  id: integer (limit: 8, null: false)
+  category: string (limit: , null: true)
+  created_at: datetime (limit: , null: false)
+  name: string (limit: , null: true)
+  teacher_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: ar_internal_metadata ---
+  key: string (limit: , null: false)
+  value: string (limit: , null: true)
+  created_at: datetime (limit: , null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: club_schedules ---
+  id: integer (limit: 8, null: false)
+  activity_type: string (limit: , null: true)
+  club_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  end_time: time (limit: , null: true)
+  location_id: integer (limit: 8, null: false)
+  schedule_date: date (limit: , null: true)
+  start_time: time (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: exams ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: false)
+  class_subject_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  exam_date: date (limit: , null: true)
+  exam_type: string (limit: , null: true)
+  max_mark: integer (limit: 4, null: true)
+  pass_mark: integer (limit: 4, null: true)
+  time_slot_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: attendances ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  date: date (limit: , null: true)
+  status: string (limit: , null: true)
+  student_id: integer (limit: 8, null: false)
+  time_slot_id: integer (limit: 8, null: false)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: class_subjects ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  credit: integer (limit: 4, null: true)
+  school_class_id: integer (limit: 8, null: false)
+  subject_id: integer (limit: 8, null: false)
+  syllabus: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: students ---
+  id: integer (limit: 8, null: false)
+  address: string (limit: , null: true)
+  created_at: datetime (limit: , null: false)
+  dob: date (limit: , null: true)
+  name: string (limit: , null: true)
+  password: string (limit: , null: true)
+  phone: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: teachers ---
+  id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  department_id: integer (limit: 8, null: false)
+  dob: date (limit: , null: true)
+  email: string (limit: , null: true)
+  is_hod: boolean (limit: , null: true)
+  name: string (limit: , null: true)
+  password: string (limit: , null: true)
+  phone: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: subjects ---
+  id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  description: string (limit: , null: true)
+  name: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: school_classes ---
+  id: integer (limit: 8, null: false)
+  academic_year_id: integer (limit: 8, null: true)
+  created_at: datetime (limit: , null: false)
+  grade_lvl: integer (limit: 4, null: true)
+  location_id: integer (limit: 8, null: false)
+  section: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: departments ---
+  id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  name: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: locations ---
+  id: integer (limit: 8, null: false)
+  building: string (limit: , null: true)
+  created_at: datetime (limit: , null: false)
+  floor: string (limit: , null: true)
+  location_type: string (limit: , null: true)
+  name: string (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: time_slots ---
+  id: integer (limit: 8, null: false)
+  created_at: datetime (limit: , null: false)
+  end_time: time (limit: , null: true)
+  name: string (limit: , null: true)
+  position: integer (limit: 4, null: true)
+  start_time: time (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+--- Schema for table: academic_years ---
+  id: integer (limit: 8, null: false)
+  active: boolean (limit: , null: true)
+  created_at: datetime (limit: , null: false)
+  end_date: date (limit: , null: true)
+  name: string (limit: , null: false)
+  start_date: date (limit: , null: true)
+  updated_at: datetime (limit: , null: false)
+
+=> 
+["club_members",
+ "enrollments",
+ "exam_results",
+ "teacher_assignments",
+ "timetables",
+ "schema_migrations",
+ "clubs",
+ "ar_internal_metadata",
+ "club_schedules",
+ "exams",
+ "attendances",
+ "class_subjects",
+ "students",
+ "teachers",
+ "subjects",
+ "school_classes",
+ "departments",
+ "locations",
+ "time_slots",
+ "academic_years"]

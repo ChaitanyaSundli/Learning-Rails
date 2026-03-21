@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_20_211950) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_21_110604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,12 +29,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_211950) do
     t.date "date"
     t.string "status"
     t.bigint "student_id", null: false
-    t.bigint "time_slot_id", null: false
     t.datetime "updated_at", null: false
     t.index ["academic_year_id"], name: "index_attendances_on_academic_year_id"
-    t.index ["student_id", "date", "time_slot_id"], name: "index_unique_attendance", unique: true
     t.index ["student_id"], name: "index_attendances_on_student_id"
-    t.index ["time_slot_id"], name: "index_attendances_on_time_slot_id"
   end
 
   create_table "class_subjects", force: :cascade do |t|
@@ -219,7 +216,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_211950) do
 
   add_foreign_key "attendances", "academic_years"
   add_foreign_key "attendances", "students"
-  add_foreign_key "attendances", "time_slots"
   add_foreign_key "class_subjects", "academic_years"
   add_foreign_key "class_subjects", "school_classes"
   add_foreign_key "class_subjects", "subjects"

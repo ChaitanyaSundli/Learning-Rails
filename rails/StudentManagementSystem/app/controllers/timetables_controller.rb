@@ -6,7 +6,7 @@ class TimetablesController < ApplicationController
   # GET /timetables
   # GET /timetables.json
   def index
-    @timetables = Timetable.includes(:subject, :teacher, :school_class, :time_slot)
+    @timetables = Timetable.includes(:subject, :school_class, :time_slot)
   end
 
   # GET /timetables/1
@@ -42,7 +42,37 @@ class TimetablesController < ApplicationController
     @timetable.destroy!
   end
 
+  def available_teachers
+    day = params[:day_of_week]
+    time_slot_id = params[:time_slot_id]
+    academic_year_id = params[:academic_year_id]
+    busy_teacher_ids = Timetable.joins(class_subject: :teacher_assignments)
+      .where(
+        day_of_week: day,
+        time_slot_id: time_slot_id,
+        academic_year_id: academic_year_id
+      )
+      .pluck("teacher_assignments.teacher_id")
+    teachers = Teacher.where.not(id: busy_teacher_ids)
+    render json: teachers
+  end
+
+  def available_class_subjects
+    day = params[:day_of_week]
+    time_slot_id = params[:time_slot_id]
+    academic_year_id = params[:academic_year_id]
+    busy_ids = Timetable.where(
+      day_of_week: day,
+      time_slot_id: time_slot_id,
+      academic_year_id: academic_year_id
+    ).pluck(:class_subject_id)
+    subjects = ClassSubject.where(academic_year_id: academic_year_id)
+                           .where.not(id: busy_ids)
+    render json: subjects
+  end
+
   private
+
     def set_timetable
       @timetable = Timetable.find(params[:id])
     end
@@ -51,55 +81,4 @@ class TimetablesController < ApplicationController
       params.require(:timetable).permit( :class_subject_id, :academic_year_id, :time_slot_id, :day_of_week)
     end
 
-    def available_teachers
-      day = params[:day_of_week]
-      time_slot_id = params[:time_slot_id]
-      academic_year_id = params[:academic_year_id]
-
-      busy_teacher_ids = Timetable.joins(class_subject: :teacher_assignment)
-        .where(
-          day_of_week: day,
-          time_slot_id: time_slot_id,
-          academic_year_id: academic_year_id
-        )
-        .pluck("teacher_assignments.teacher_id")
-
-      teachers = Teacher.where.not(id: busy_teacher_ids)
-
-      render json: teachers
-    end
-
-    def available_class_subjects
-      day = params[:day_of_week]
-      time_slot_id = params[:time_slot_id]
-      academic_year_id = params[:academic_year_id]
-
-      busy_ids = Timetable.where(
-        day_of_week: day,
-        time_slot_id: time_slot_id,
-        academic_year_id: academic_year_id
-      ).pluck(:class_subject_id)
-
-      subjects = ClassSubject.where(academic_year_id: academic_year_id)
-                             .where.not(id: busy_ids)
-
-      render json: subjects
-    end
-
-    def available_class_subjects
-      day = params[:day_of_week]
-      time_slot_id = params[:time_slot_id]
-      academic_year_id = params[:academic_year_id]
-
-      busy_ids = Timetable.where(
-        day_of_week: day,
-        time_slot_id: time_slot_id,
-        academic_year_id: academic_year_id
-      ).pluck(:class_subject_id)
-
-      subjects = ClassSubject.where(academic_year_id: academic_year_id)
-                             .where.not(id: busy_ids)
-
-      render json: subjects
-    end
 end

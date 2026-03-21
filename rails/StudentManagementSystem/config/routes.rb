@@ -8,6 +8,12 @@ Rails.application.routes.draw do
     resources :timetables, only: [:index]
     resources :clubs, only: [:index]
 
+    collection do
+      get :students_with_poor_performance
+      get :classwise_top_5_absentees
+      get :teacher_performance
+    end
+
     member do
       get :dashboard
     end
@@ -29,6 +35,10 @@ Rails.application.routes.draw do
     resources :attendances, only: [:index]
     resources :exam_results, only: [:index]
     resources :clubs, only: [:index]
+
+    collection do
+      get :login
+    end
 
     member do
       get :timetable

@@ -1,6 +1,5 @@
 class TimeSlot < ApplicationRecord
   has_many :timetables, dependent: :destroy
-  has_many :attendances, dependent: :destroy
   has_many :exams, dependent: :destroy
 
   validates :position, uniqueness: true
