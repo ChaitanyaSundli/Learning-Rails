@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  message: MyText
+  is_pinned: false
+  reminder_at: 2026-03-24 00:36:40
+
+two:
+  title: MyString
+  message: MyText
+  is_pinned: false
+  reminder_at: 2026-03-24 00:36:40
